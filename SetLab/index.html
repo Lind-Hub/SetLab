@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SetLab — Kalkulator Operasi Himpunan</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header Aplikasi -->
+        <header class="app-header">
+            <div class="brand">
+                <div class="brand-icon">∅</div>
+                <div>
+                    <h1>SetLab</h1>
+                    <p class="subtitle">Kalkulator &amp; Visualisator Operasi Himpunan Interaktif</p>
+                </div>
+            </div>
+            <div class="header-badge">Matematika Diskrit</div>
+        </header>
+
+        <!-- Main Layout: Grid 2 Kolom -->
+        <main class="calculator-grid">
+            
+            <!-- Kolom Kiri: Input Data & Keypad Operasi -->
+            <section class="panel panel-input" aria-label="Input dan Kontrol Kalkulator">
+                <div class="panel-header">
+                    <h2>Input Himpunan</h2>
+                    <span class="info-tip">Pemisah utama: koma (,) atau titik koma (;)</span>
+                </div>
+
+                <!-- Form Input Himpunan -->
+                <div class="input-group">
+                    <label for="input-a">Himpunan A</label>
+                    <div class="input-wrapper">
+                        <span class="set-label">A = {</span>
+                        <input type="text" id="input-a" placeholder="Contoh: 1, 2, 3, 4" autocomplete="off">
+                        <span class="set-label">}</span>
+                    </div>
+                    <div class="parsed-preview" id="preview-a">A = {}</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="input-b">Himpunan B</label>
+                    <div class="input-wrapper">
+                        <span class="set-label">B = {</span>
+                        <input type="text" id="input-b" placeholder="Contoh: 3, 4, 5, 6" autocomplete="off">
+                        <span class="set-label">}</span>
+                    </div>
+                    <div class="parsed-preview" id="preview-b">B = {}</div>
+                </div>
+
+                <div class="input-group">
+                    <label for="input-u">Himpunan Semesta (U) <span class="optional-tag">Diperlukan untuk Komplemen</span></label>
+                    <div class="input-wrapper">
+                        <span class="set-label">U = {</span>
+                        <input type="text" id="input-u" placeholder="Contoh: 1, 2, 3, 4, 5, 6, 7, 8" autocomplete="off">
+                        <span class="set-label">}</span>
+                    </div>
+                    <div class="parsed-preview" id="preview-u">U = {}</div>
+                </div>
+
+                <!-- Keypad Operasi Kalkulator -->
+                <div class="keypad-section">
+                    <label class="keypad-title">Pilih Operasi Himpunan</label>
+                    <div class="keypad-grid" role="radiogroup" aria-label="Pilihan Operasi Himpunan">
+                        <button type="button" class="btn-op active" data-op="UNION" aria-checked="true" role="radio">
+                            <span class="op-symbol">A ∪ B</span>
+                            <span class="op-name">Gabungan</span>
+                        </button>
+                        <button type="button" class="btn-op" data-op="INTERSECTION" aria-checked="false" role="radio">
+                            <span class="op-symbol">A ∩ B</span>
+                            <span class="op-name">Irisan</span>
+                        </button>
+                        <button type="button" class="btn-op" data-op="DIFF_A_B" aria-checked="false" role="radio">
+                            <span class="op-symbol">A − B</span>
+                            <span class="op-name">Selisih A - B</span>
+                        </button>
+                        <button type="button" class="btn-op" data-op="DIFF_B_A" aria-checked="false" role="radio">
+                            <span class="op-symbol">B − A</span>
+                            <span class="op-name">Selisih B - A</span>
+                        </button>
+                        <button type="button" class="btn-op" data-op="COMP_A" aria-checked="false" role="radio">
+                            <span class="op-symbol">Aᶜ</span>
+                            <span class="op-name">Komplemen A</span>
+                        </button>
+                        <button type="button" class="btn-op" data-op="COMP_B" aria-checked="false" role="radio">
+                            <span class="op-symbol">Bᶜ</span>
+                            <span class="op-name">Komplemen B</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button type="button" id="btn-calculate" class="btn btn-primary">Hitung Hasil</button>
+                    <button type="button" id="btn-demo" class="btn btn-secondary">Isi Contoh Data</button>
+                    <button type="button" id="btn-reset" class="btn btn-outline">Reset</button>
+                </div>
+            </section>
+
+            <!-- Kolom Kanan: Hasil, Diagram Venn & Penjelasan -->
+            <section class="panel panel-output" aria-label="Hasil Perhitungan dan Visualisasi">
+                
+                <!-- Alert/Message Box untuk Validasi Error -->
+                <div id="error-box" class="error-box hidden" role="alert"></div>
+
+                <!-- Cards Ringkasan Hasil -->
+                <div class="result-card">
+                    <div class="result-header">
+                        <span class="badge-op" id="result-op-badge">A ∪ B</span>
+                        <h2 id="result-op-title">Gabungan Himpunan A dan B</h2>
+                    </div>
+
+                    <div class="result-display-box">
+                        <div class="result-formula" id="result-formula">A ∪ B =</div>
+                        <div class="result-value" id="result-set-value">{ }</div>
+                    </div>
+
+                    <div class="result-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Kardinalitas:</span>
+                            <span class="meta-value" id="result-cardinality">|A ∪ B| = 0</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status Himpunan:</span>
+                            <span class="meta-value" id="result-status">Himpunan Kosong (∅)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visualisasi Diagram Venn SVG -->
+                <div class="venn-container">
+                    <h3>Diagram Venn Interaktif</h3>
+                    <div class="svg-wrapper">
+                        <svg id="venn-svg" viewBox="0 0 420 260" xmlns="http://www.w3.org/2000/svg" aria-label="Diagram Venn Himpunan">
+                            <!-- Semesta U Box -->
+                            <rect id="region-u" class="venn-bg" x="10" y="10" width="400" height="240" rx="12"></rect>
+                            <text x="25" y="35" class="svg-label label-u">U</text>
+
+                            <!-- Region Shapes untuk Highlight (Padat Putih secara default) -->
+                            <!-- Region Only A -->
+                            <path id="region-only-a" class="venn-region" d="M 210,51.26 A 90,90 0 1,0 210,208.74 A 90,90 0 0,1 210,51.26 Z"></path>
+                            <!-- Region Only B -->
+                            <path id="region-only-b" class="venn-region" d="M 210,51.26 A 90,90 0 0,1 210,208.74 A 90,90 0 1,0 210,51.26 Z"></path>
+                            <!-- Region Intersection -->
+                            <path id="region-inter" class="venn-region" d="M 210,51.26 A 90,90 0 0,1 210,208.74 A 90,90 0 0,1 210,51.26 Z"></path>
+
+                            <!-- Circle Outlines -->
+                            <circle id="circle-a" class="venn-circle-outline" cx="155" cy="130" r="90"></circle>
+                            <circle id="circle-b" class="venn-circle-outline" cx="265" cy="130" r="90"></circle>
+
+                            <!-- Labels Circle A dan B -->
+                            <text x="105" y="65" class="svg-label label-a">A</text>
+                            <text x="315" y="65" class="svg-label label-b">B</text>
+
+                            <!-- Text Elemen di dalam Region -->
+                            <text id="text-only-a" x="115" y="135" class="svg-element-text"></text>
+                            <text id="text-inter" x="210" y="135" class="svg-element-text"></text>
+                            <text id="text-only-b" x="305" y="135" class="svg-element-text"></text>
+                            <text id="text-outside-u" x="30" y="235" class="svg-element-text text-u-elements"></text>
+                        </svg>
+                    </div>
+                    <div class="venn-legend">
+                        <span class="legend-item"><span class="legend-color highlight-color"></span> Daerah Hasil Operasi</span>
+                        <span class="legend-item"><span class="legend-color default-color"></span> Himpunan Diluar Hasil</span>
+                    </div>
+                </div>
+
+                <!-- Penjelasan Langkah Demi Langkah -->
+                <div class="explanation-card">
+                    <h3>Penjelasan Langkah Perhitungan</h3>
+                    <div id="explanation-content" class="explanation-steps">
+                        <!-- Konten diisi secara dinamis dan aman oleh JavaScript -->
+                    </div>
+                </div>
+
+            </section>
+        </main>
+
+        <!-- Bagian Teori Matematika Diskrit -->
+        <section class="theory-section" aria-label="Materi Teori Matematika Diskrit">
+            <div class="theory-header">
+                <h2>Landasan Teori Operasi Himpunan</h2>
+                <p>Ringkasan konsep dasar Matematika Diskrit yang diterapkan dalam kalkulator SetLab.</p>
+            </div>
+
+            <div class="theory-grid">
+                <article class="theory-card">
+                    <h3>1. Himpunan (Set)</h3>
+                    <p>Kumpulan objek-objek berbeda (elemen/anggota) yang terdefinisi dengan jelas. Dalam himpunan, urutan anggota tidak diperhitungkan dan anggota yang berulang digabungkan menjadi satu elemen unik.</p>
+                    <code>S = {x₁, x₂, ..., xₙ}</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>2. Himpunan Semesta (U)</h3>
+                    <p>Himpunan yang memuat seluruh elemen yang sedang menjadi objek pembicaraan dalam konteks atau batasan tertentu.</p>
+                    <code>∀ x, x ∈ U</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>3. Gabungan (Union - ∪)</h3>
+                    <p>Gabungan himpunan A dan B adalah himpunan yang anggotanya merupakan anggota A, atau anggota B, atau anggota kedua-duanya.</p>
+                    <code>A ∪ B = {x | x ∈ A atau x ∈ B}</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>4. Irisan (Intersection - ∩)</h3>
+                    <p>Irisan himpunan A dan B adalah himpunan yang anggotanya terdapat pada himpunan A sekaligus terdapat pada himpunan B.</p>
+                    <code>A ∩ B = {x | x ∈ A dan x ∈ B}</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>5. Selisih (Difference - −)</h3>
+                    <p>Selisih himpunan A terhadap B (ditulis A − B) adalah himpunan elemen yang dimiliki oleh A tetapi tidak dimiliki oleh B.</p>
+                    <code>A − B = {x | x ∈ A dan x ∉ B}</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>6. Komplemen (Complement - ᶜ)</h3>
+                    <p>Komplemen dari himpunan A terhadap semesta U adalah himpunan semua elemen dalam U yang tidak ada di dalam A. Syarat mutlak: A ⊆ U.</p>
+                    <code>Aᶜ = U − A = {x | x ∈ U dan x ∉ A}</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>7. Kardinalitas (|A|)</h3>
+                    <p>Kardinalitas adalah jumlah banyaknya anggota unik yang terdapat dalam suatu himpunan. Jika A = {1, 2, 3}, maka |A| = 3.</p>
+                    <code>|A| = n(A)</code>
+                </article>
+
+                <article class="theory-card">
+                    <h3>8. Himpunan Kosong (∅)</h3>
+                    <p>Himpunan yang tidak memiliki anggota sama sekali. Kardinalitas dari himpunan kosong adalah nol (|∅| = 0).</p>
+                    <code>∅ = {} , |∅| = 0</code>
+                </article>
+            </div>
+
+            <div class="theory-application-card">
+                <h3>💡 Contoh Penerapan Nyata dalam Ilmu Komputer &amp; Informatika</h3>
+                <p>
+                    Operasi himpunan digunakan secara mendasar dalam <strong>Sistem Basis Data (SQL Queries)</strong>. Operasi <code>INTERSECT</code> berkorespondensi dengan Irisan (A ∩ B), <code>UNION</code> berkorespondensi dengan Gabungan (A ∪ B), dan klausa <code>EXCEPT / NOT IN</code> berkorespondensi dengan Selisih (A − B) atau Komplemen. Fitur pencarian filter toko online (misal: mencari produk berkategori <em>"Elektronik"</em> DAN bertag <em>"Diskon"</em>) pada dasarnya adalah komputasi irisan dua himpunan data.
+                </p>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
