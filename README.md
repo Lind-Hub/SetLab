@@ -6,10 +6,10 @@ Nama Kelompok : InnoLab
 
 DAFTAR ANGGOTA
 
-1   Lindung Amirullah                        26312062 
-2   Marria Ulvatur Rabaniyah                 26312036
-3   Munadhil Isman Rafie                     26312051
-4   ANSORI                                   26312022
+1   Lindung Amirullah                        26312062                                                                                                                                                      
+2   Marria Ulvatur Rabaniyah                 26312036                                                                                                                                                      
+3   Munadhil Isman Rafie                     26312051                                                                                                                                                      
+4   ANSORI                                   26312022                                                                                                                                                      
 
 1. NAMA APLIKASI
 --------------------------------------------------------------------------------
